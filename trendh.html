@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Love You Sayangg 💕</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffe6ec, #ffd1dc);
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+    }#inputScreen, #mainScreen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease;
+}
+
+#inputScreen input, #inputScreen button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 10px;
+  border-radius: 10px;
+  border: 2px solid #ff7fa8;
+}
+
+#inputScreen button {
+  background-color: #ff7fa8;
+  color: white;
+  cursor: pointer;
+}
+
+.floating-photo {
+  position: absolute;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0;
+  animation: floatIn 6s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes floatIn {
+  0% {
+    transform: scale(0.5) translateY(100vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.1) translateY(-200px);
+    opacity: 0;
+  }
+}
+
+.floating-text {
+  position: absolute;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff2e7e;
+  opacity: 0;
+  animation: floatInText 6s infinite ease-in-out;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+@keyframes floatInText {
+  0% {
+    transform: translateY(100vh) scale(0.6);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.center-text {
+  position: absolute;
+  top: 51%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: #ff2e7e;
+  text-shadow: 0 1px 2px white;
+  z-index: 2;
+  opacity: 0;
+  animation: fadeText 2s ease forwards, pulseText 3s infinite ease-in-out;
+  max-width: 90vw;
+  line-height: 1.4;
+}
+
+@keyframes fadeText {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes pulseText {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+  </style>
+</head>
+<body><!-- INPUT SCREEN --><div id="inputScreen">
+  <h2>Masukkan Nama dan Foto Pacar 💖</h2>
+  <input type="text" id="namaPacar" placeholder="Contoh: Ayangku">
+  <input type="file" id="fotoPacar" accept="image/*">
+  <button onclick="mulai()">Lanjut</button>
+</div><!-- MAIN SCREEN --><div id="mainScreen" style="opacity: 0; pointer-events: none;">
+  <!-- LOVE HEART SVG -->
+  <svg id="heartSvg" viewBox="0 0 300 270"
+       style="position: absolute; width: 100vw; max-width: 1000px; height: auto;
+              top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
+    <path id="heartPath"
+      d="M150 230
+         C-50 100, 50 -50, 150 60
+         C250 -50, 350 100, 150 230"
+      fill="none"
+      stroke="#ff4d88"
+      stroke-width="4"
+      stroke-linecap="round"
+      stroke-dasharray="1000"
+      stroke-dashoffset="1000">
+    </path>
+  </svg>  <!-- Teks utama -->  <div class="center-text" id="teksUcapan"></div>
+</div><!-- Audio background --><audio id="loveAudio" src="https://files.catbox.moe/dfoufo.mp3" autoplay loop></audio>
+
+<script>
+  function mulai() {
+    const nama = document.getElementById('namaPacar').value.trim();
+    const foto = document.getElementById('fotoPacar').files[0];
+
+    if (!nama || !foto) {
+      alert('Masukkan nama dan foto pacarmu dulu ya 😘');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imgSrc = e.target.result;
+
+      // Sembunyikan input, tampilkan layar utama
+      document.getElementById('inputScreen').style.opacity = 0;
+      document.getElementById('inputScreen').style.pointerEvents = 'none';
+
+      const main = document.getElementById('mainScreen');
+      main.style.opacity = 1;
+      main.style.pointerEvents = 'auto';
+
+      // Putar audio
+      const audio = document.getElementById('loveAudio');
+      audio.play().catch(() => {
+        console.log("Audio tidak bisa diputar otomatis, perlu interaksi pengguna.");
+      });
+
+      // Animasi love line (garis love)
+      const heartPath = document.getElementById('heartPath');
+      heartPath.style.strokeDashoffset = 1000;
+      heartPath.style.transition = 'none';
+      void heartPath.offsetWidth; // restart animasi
+      heartPath.style.transition = 'stroke-dashoffset 3s ease';
+      heartPath.style.strokeDashoffset = 0;
+
+      // Tampilkan teks utama
+      document.getElementById('teksUcapan').innerHTML = `Happy Girlfriend Day <br><strong>${nama}</strong> 💖`;
+
+      // Animasi foto pacar
+      for (let i = 0; i < 30; i++) {
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.className = 'floating-photo';
+        const size = 40 + Math.random() * 40;
+        img.style.width = `${size}px`;
+        img.style.height = `${size}px`;
+        img.style.left = `${Math.random() * 100}vw`;
+        img.style.top = `${Math.random() * 100}vh`;
+        img.style.animationDelay = `${Math.random() * 5}s`;
+        main.appendChild(img);
+      }
+
+      // Animasi teks "Love You Sayangg"
+      for (let i = 0; i < 40; i++) {
+        const text = document.createElement('div');
+        text.className = 'floating-text';
+        text.innerText = 'You Well Be....';
+        text.innerText = 'My Girl...💝';
+        text.innerText = 'My Girl...💖';
+        text.style.left = `${Math.random() * 100}vw`;
+        text.style.top = `${Math.random() * 100}vh`;
+        text.style.fontSize = `${16 + Math.random() * 10}px`;
+        text.style.animationDelay = `${Math.random() * 5}s`;
+        text.style.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
+        main.appendChild(text);
+      }
+    };
+
+    reader.readAsDataURL(foto);
+  }
+</script></body>
+</html>
